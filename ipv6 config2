@@ -1,0 +1,34 @@
+R0
+en
+config t
+ipv6 unicast-routing
+int g0/0
+ipv6 address 2001:db8:3c4d:1::1/64
+no sh
+int g0/1
+ipv6 address 2001:db8:3c4d:2::1/64
+no sh
+hostname C
+
+en
+config t
+ipv6 unicast-routing
+int g0/0
+ipv6 address autoconfig
+no sh
+
+A
+ipv6 route 2001:db8:3c4d:2::/64 g0/0
+do sh ipv6 route
+
+B
+ipv6 route ::/0 g0/0
+do sh ipv6 route
+
+D
+ipv6 route 2001:db8:3c4d:1::/64 g0/0
+do sh ipv6 route
+
+E
+ipv6 route 2001:db8:3c4d:1::/64 g0/0
+do sh ipv6 route
