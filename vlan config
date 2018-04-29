@@ -1,0 +1,133 @@
+int g0/1
+switch mode trunk
+
+int g0/1
+swit trun encp dot1q
+swit mode trun
+int g0/2
+swit trun encap dot1q
+swit mode trunk
+
+int g0/2 
+swit mode trunk
+
+vlan 10
+name Eng
+vlan 20
+name Sales
+vlan 199
+name Native
+
+int g0/1
+swit trun native vlan 199
+
+int g0/1
+swit trun native vlan 199
+int g0/2
+swit trun native vlan 199
+
+int g0/2
+swit trun native vlan 199
+
+
+ROAS
+
+
+
+
+LABBB
+sw1
+vrfy
+sh int g0/1 switchport
+switchport mode trunk
+
+sw2
+dyn auto picks up
+
+add vlans
+vlan 10
+name Eng
+vlan 20 
+name Sales
+vlan 199
+name Native
+vfy 
+show vlan brief
+
+ch nativ
+int g0/1 sw1 and g0/2 sw2
+switchport trunk native vlan 199
+
+sw2
+sh int g0/1 swi /  g0/2
+switchport trunk encapsulation dot1q
+switchport trunk native vlan 199
+switchport mode trunk
+
+
+
+sw1
+int range f0/1-2
+switchport access vlan 10
+int f0/3
+switchport acces vlan 20
+
+sw3
+int range f0/1-2
+switchport acces vlan 20
+int f0/3
+switchport acces vlan 10
+
+
+ROAS1(without sub interface): int f0/1
+ip address 10.10.10.1 255.255.255.0
+no sh
+int f0/2
+ip address 10.10.20.1 255.255.255.0
+no sh
+
+SW2: int f0/1
+switchport access vlan 10
+vlan 10
+name Eng
+int f0/2
+switchport access vlan 20
+vlan 20
+name Sales
+vlan 199
+name Native
+
+ROAS2: int f0/0
+no ip add
+no shut
+int f0/1
+shut
+int f0/0.10
+encapsulation dot1q 10
+ip address 10.10.10.1 255.255.255.0
+no sh
+int f0/0.20
+encapsulation dot1q 20
+ip address 10.10.20.1 255.255.255.0
+no sh
+int f0/0.30
+encapsulation dot1q 1
+ip address 10.10.30.1 255.255.255.0
+no sh
+do sh ip int bri
+
+SW 
+int  f0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+
+
+SVI
+SW2
+en
+config t
+ip routing
+int vlan 10
+ip address 10.10.10.1 255.255.255.0
+int vlan 20
+ip address 10.10.20.1 255.255.255.0
