@@ -1,0 +1,94 @@
+ISP
+en
+config t
+int se0/3/0
+ip address 171.16.10.1 255.255.255.0
+desc serial to Lab_A
+no sh
+hostname ISP
+
+en
+config t
+int se0/3/0
+ip address 171.16.10.2 255.255.255.0
+desc se Lab_A to ISP
+no sh
+hostname Lab_A
+int se0/3/1
+ip address 192.168.20.1 255.255.255.0
+desc se Lab_A to Lab_B
+no sh
+hostname Lab_A
+end
+
+config t
+router rip
+network 192.168.20.0
+network 171.16.0.0
+passive-interface s0/3/0
+exit
+ip default-network 171.16.10.1
+
+
+LABB
+en
+config t
+int se0/3/0
+ip address 192.168.20.2 255.255.255.0
+desc se Lab_B to A
+no sh
+int g0/0
+ip address 192.168.30.1 255.255.255.0
+desc LabB to C
+no sh
+hostname Lab_B
+
+end
+config t
+router rip
+network 192.168.20.0
+network 192.168.30.0
+
+LABC
+en
+config t
+int g0/0
+ip address 192.168.30.2 255.255.255.0
+no sh
+hostname Lab_C
+
+end
+config t
+router rip
+network 192.168.30.0
+
+ISP
+config t
+ip route 0.0.0.0 0.0.0.0 s0/3/0
+line vty 0 4
+no login 
+
+
+LABA
+end
+config t
+ip nat pool GlobalNet 171.16.10.50 171.16.10.55 net 255.255.255.0
+access-list 1 permit 192.168.20.0 0.0.0.255
+access-list 1 permit 192.168.30.0 0.0.0.255
+ip nat inside source list 1 pool GlobalNet
+int s0/3/1
+ip nat inside
+int s0/3/0
+ip nat outside
+do sh ip nat trans
+
+do clear ip nat trans *
+no ip nat pool GlobalNet 171.16.10.50 171.16.10.55 net 255.255.255.0
+no ip nat inside source list 1 pool GlobalNet
+
+ip nat pool GlobalNet1 171.16.10.50 171.16.10.55 net 255.255.255.0
+access-list 1 permit 192.168.20.0 0.0.0.255
+access-list 1 permit 192.168.30.0 0.0.0.255
+ip nat inside source list 1 pool GlobalNet1 overload
+
+
