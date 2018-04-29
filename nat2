@@ -1,0 +1,14 @@
+int f1/0
+ip nat inside
+int f2/0
+ip nat inside
+int f0/0
+ip nat outside
+exit
+ip nat pool POOL 203.0.113.4 203.0.113.6 prefix-len 28
+access-list 1 permit 10.0.2.0 0.0.0.255
+ip nat inside source list 1 pool POOL overload
+ip nat inside source list 1 interface f0/0 overload
+
+int f0/0
+ip address 10.0.2.121 255.255.255.0
