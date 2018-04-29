@@ -1,0 +1,90 @@
+R0
+exit
+config t
+ipv6 unicast-routing
+int g0/1
+ipv6 address 2001:db8:0:1::1/64
+no sh
+int g0/0
+ipv6 address 2001:db8:0:0::1/64
+no sh
+do sh ipv6 int bri
+
+R2
+exit
+config t
+ipv6 unicast-routing
+int g0/0
+ipv6 address 2001:db8:0:1::2/64
+no sh
+int g0/1
+ipv6 address 2001:db8:0:2::2/64
+no sh
+do sh ipv6 int bri
+
+R3
+exit
+config t
+ipv6 unicast-routing
+int g0/0
+ipv6 address 2001:db8:0:2::1/64
+no sh
+int g0/1
+ipv6 address 2001:db8:0:3::1/64
+no sh
+do sh ipv6 int bri
+
+
+
+
+-----------
+
+int g0/0
+ipv6 address 2001:DB8:43:91::2/64
+no sh
+ipv6 route 2001:1234:4321:1::/64  2001:DB8:43:91::1
+
+int g0/0
+ipv6 address 2001:DB8:43:91::1/64
+no sh
+ipv6 route ::/0 g0/0
+
+corp
+config t
+ipv6 unicast-routing 
+int g0/0
+ipv6 address 2001:db8:3c4d:11::/64 eui-64
+no sh
+int s0/3/0
+ipv6 address 2001:db8:3c4d:12::/64 eui-64
+clock rate 56000
+no sh
+int s0/3/1
+ipv6 address 2001:db8:3c4d:13::/64 eui-64
+clock rate 56000
+hostname corp
+ipv6 route 2001:db8:3c4d:14::/64 2001:DB8:3C4D:14:206:2AFF:FED9:2501 150
+ipv6 route 2001:db8:3c4d:15::/64 s0/3/1
+do sh ipv6 rout stat
+
+en
+config t
+ipv6 unicast-routing
+int g0/0
+ipv6 address 2001:db8:3c4d:15::/64 eui-64
+no sh
+int s0/2/0
+no sh
+hostname LA
+ipv6 route 
+
+en
+config t
+ipv6 unicast-routing
+int g0/0
+ipv6 address 2001:db8:3c4d:14::/64 eui-64
+no sh
+int s0/3/0
+no sh
+hostname SF
+
