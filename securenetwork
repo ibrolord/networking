@@ -186,8 +186,8 @@ ip access-lis ext NoACCTtoMGMT
 permit icmp any any
 deny ip 192.168.10.0 255.255.255.255 192.168.0.32 255.255.255.255 
 
-int range f0/4-11
-ip access-group 
+int vlan 30
+ip access-group NoACCTtoMGMT out
 
 --------------
 NAT
