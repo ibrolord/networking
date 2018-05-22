@@ -1,0 +1,194 @@
+-------------
+VLAN
+-------------
+
+ISP
+en
+config t
+hostname ISP
+int serial0
+desc ISP to WAN
+ip address 234.32.32.32 255.255.255.0
+clock rate 1000000
+no sh
+banner motd $ This is ISP Do the right thing $
+enable secret ISP
+line console 0
+password ISPC
+login
+logging sync
+no ip domain-lookup
+
+
+Entry
+en
+conf t
+hostname Entry
+int serial0/2/0
+desc Entry to 2nd Beefup
+desc Entry focuses on just routing no ACLs and stuff
+no sh
+enable secret Entry
+line console 0
+password Entryc
+login
+logging sync
+banner motd $ This is Entry RT be smat $
+no ip domain-lookup
+int g0/0
+ip address 192.168.0.1 255.255.255.248
+no sh 
+int g0/1
+ip address 192.168.0.9 255.255.255.248
+no sh
+ip route 0.0.0.0 0.0.0.0 g0/0
+ip route 0.0.0.0 0.0.0.0 g0/1
+
+SWIITCH3a
+en
+conf t
+hostname SWITCH3
+no ip domain-lookup
+ip routing
+int vlan1
+desc switches are onthe /29 kinda
+ip address 192.168.0.5 255.255.255.248
+no sh
+int range f0/1-3
+swi trun encap dot1q
+switchport mode trunk
+int g0/1
+swi trun encap dot1q
+switchport mode trunk
+int f0/6
+switchport access vlan 20
+vlan 20
+name Sales
+vlan 30
+name MGMT
+vlan 40
+name ACCT
+vlan 50
+name Tech
+logging sync
+service password-enc
+vlan 80
+name PrivateWAN
+
+SWITH1
+en
+conf t
+no ip domain-lookup
+ip routing
+int vlan1
+desc switches are onthe /29 kinda
+ip address 192.168.0.6 255.255.255.248
+no sh
+int range f0/4-14
+switchport mode access
+switchport access vlan 20
+vlan 20
+name Sales
+int range f0/15-20
+switchport mode access
+switchport access vlan 30
+vlan 30
+name MGMT
+int range f0/1-2
+swi trun encap dot1q
+switchport mode trunk
+int range g0/1-2
+swi trun encap dot1q
+switchport mode trunk
+vlan 40
+name ACCT
+vlan 50
+name Tech
+hostname SWITCH2
+int f0/11
+switchport access vlan 70
+vlan 70
+name PublicWAN
+int f0/3
+switchport mode access
+switchport access vlan 80
+vlan 80
+name PrivateWAN
+
+
+
+
+
+SWITCH2
+en
+conf t
+ip routing
+int vlan1
+desc switches are onthe /29 kinda
+ip address 192.168.0.7 255.255.255.248
+no sh
+int range f0/4-11
+desc Acct needs only 8 hosts but we have 14 from /28 so we ignore the remaining with VLAN
+switchport mode access
+switchport access vlan 40
+vlan 20
+name Sales
+vlan 30
+name MGMT
+vlan 40
+name ACCT
+vlan 20
+name Sales
+vlan 30
+name MGMT
+int range g0/1-2
+swi trun encap dot1q
+switchport mode trunk
+int range f0/1-3
+swi trun encap dot1q
+switchport mode trunk
+int range f0/11-20
+switchport mode access
+switchport access vlan 50
+vlan 50
+name Tech
+int range f0/20-24
+desc this is completely isolated
+switchport access vlan 60
+vlan 60
+name Test
+hostname SWITCH3
+vlan 80
+name PrivateWAN
+
+---------------
+Security
+---------------
+
+
+--------------
+Routing
+--------------
+set up intervlan routing for ACCT(30) to MGMT(40) 
+intervlan routinf for Domain to Tech() all computers
+
+
+
+--------------
+NAT
+--------------
+
+
+--------------
+NTP
+--------------
+
+
+--------------
+TFTP DNS DHCP
+--------------
+
+
+--------------
+LINE configs
+--------------
