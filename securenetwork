@@ -75,7 +75,7 @@ service password-enc
 vlan 80
 name PrivateWAN
 
-SWITH1
+SWITH2
 en
 conf t
 no ip domain-lookup
@@ -119,7 +119,7 @@ name PrivateWAN
 
 
 
-SWITCH2
+SWITCH3
 en
 conf t
 ip routing
@@ -171,8 +171,23 @@ Routing
 --------------
 set up intervlan routing for ACCT(30) to MGMT(40) 
 intervlan routinf for Domain to Tech() all computers
+SWITCH2 & SWITCH1io
+int vlan 30
+desc gateway vlan is 192.168.0.33
+ip address 192.168.0.33 255.255.255.248
+no sh
+int vlan 40
+desc gateway vlan is 192.168.10.1
+ip address 192.168.10.1 255.255.255.240
+no sh
 
+SWITCH1
+ip access-lis ext NoACCTtoMGMT
+permit icmp any any
+deny ip 192.168.10.0 255.255.255.255 192.168.0.32 255.255.255.255 
 
+int range f0/4-11
+ip access-group 
 
 --------------
 NAT
