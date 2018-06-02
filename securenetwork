@@ -180,6 +180,10 @@ int vlan 40
 desc gateway vlan is 192.168.10.1
 ip address 192.168.10.1 255.255.255.240
 no sh
+int vlan 20
+desc gateway sales vlan is 192.168.0.17
+ip address 192.168.0.17 255.255.255.240
+no sh
 
 SWITCH1
 ip access-lis ext NoACCTtoMGMT
@@ -188,6 +192,36 @@ deny ip 192.168.10.0 255.255.255.255 192.168.0.32 255.255.255.255
 
 int vlan 30
 ip access-group NoACCTtoMGMT out
+
+ip access-list stand OnlyDomintoSales
+deny ip 192.168.0.64 0.0.0.31
+remark deny anything asides domain
+int vlan 20 
+ip access-group OnlyDomintoSales out
+
+
+
+Domain routing(SW2) on all switches
+int vlan 50
+ip address 192.168.0.65 255.255.255.224
+desc gateway vlan is 192.168.0.65
+
+ROUTER RIP (SW2)
+conf t
+ip routing
+router rip
+version 2
+no au
+network 192.168.0.64
+
+ROUTER RIP (SW1)
+conf t
+ip routing
+router rip
+version 2
+no au
+network 192.168.0.16
+network 192.168.0.32
 
 --------------
 NAT
